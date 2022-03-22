@@ -4,19 +4,11 @@ const progressText = document.querySelector('#progressText');
 const scoreText = document.querySelector('#score');
 const progressBarFull = document.querySelector('#progressBarFull');
 
-let timerCount = document.querySelector(".timer-count");
-let timerContainer = document.querySelector(".timer");
-let seconds = document.querySelector("#seconds");
-
-
-let currentQuestion = {};
-let acceptingAnswers = true;
-let score = 0;
-let index = 0;
-let timeLeft = 60;
-let deduction = 10;
-let questionCounter = 0;
-let availableQuestions = [];
+let currentQuestion = {}
+let acceptingAnswers = true
+let score = 0
+let questionCounter = 0
+let availableQuestions = []
 
 let questions = [
     { 
@@ -56,62 +48,51 @@ let questions = [
         choice3: "Undefined",
         choice4: "All of the above",
         answer: "All of the above",
-    },
-
-    {
-        //JavaScript - NaN
-        question: "What primitive type is NaN?",
-        choice1: "String",
-        choice2: "Number",
-        choice3: "Object",
-        choice4: "Undefined",
-        answer: "Number",
     }
-
 ]
 
+const SCORE_POINTS = 100
 const MAX_QUESTIONS = 4
 
 startGame = () => {
     questionCounter = 0
-    score = 60
+    score = 0
     availableQuestions = [...questions]
-    getNewQuestion ()
+    getNewQuestion()
 }
 
 getNewQuestion = () => {
-    if(availableQuestions.length === 0 assign(url: String): void QUESTIONS) {
+    if(availableQuestions.length === 0 || questionCounter > MAX_QUESTIONS) {
         localStorage.setItem('mostRecentScore', score)
 
-        return window.location.assign ('/end.html')
-    } 
+        return window.location.assign('/end.html')
+    }
 
-    questionCounter ++ 
+    questionCounter++
     progressText.innerText = `Question ${questionCounter} of ${MAX_QUESTIONS}`
     progressBarFull.style.width = `${(questionCounter/MAX_QUESTIONS) * 100}%`
-
+    
     const questionsIndex = Math.floor(Math.random() * availableQuestions.length)
-    currentQuestion = availableQuestions [questionsIndex]
+    currentQuestion = availableQuestions[questionsIndex]
     question.innerText = currentQuestion.question
 
     choices.forEach(choice => {
-        const Number = choice.dataset ['number']
-        choice.innerText = currentQuestion ['choice' + number]
+        const number = choice.dataset['number']
+        choice.innerText = currentQuestion['choice' + number]
     })
 
-availableQuestions.splice(questionsIndex, 1)
+    availableQuestions.splice(questionsIndex, 1)
 
-acceptingAnswers = true
-
+    acceptingAnswers = true
 }
 
 choices.forEach(choice => {
-    choice.addEventListener ('click', e => {
+    choice.addEventListener('click', e => {
         if(!acceptingAnswers) return
 
         acceptingAnswers = false
         const selectedChoice = e.target
-        const selectedAnswer = selectedChoice.dataset ['number']
+        const selectedAnswer = selectedChoice.dataset['number']
 
         let classToApply = selectedAnswer == currentQuestion.answer ? 'correct' : 'incorrect'
 
@@ -121,9 +102,10 @@ choices.forEach(choice => {
 
         selectedChoice.parentElement.classList.add(classToApply)
 
-        setTimeout (() => {
-selectedChoice.parentElement.classList.remove(classToApply)
-getNewQuestion ()
+        setTimeout(() => {
+            selectedChoice.parentElement.classList.remove(classToApply)
+            getNewQuestion()
+
         }, 1000)
     })
 })
@@ -133,4 +115,4 @@ incrementScore = num => {
     scoreText.innerText = score
 }
 
-startGame ()
+startGame()
